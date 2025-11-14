@@ -11,7 +11,7 @@ def replace_caption_generic(data, new_caption):
             for el in elements:
                 buttons = el.get("buttons", [])
                 for btn in buttons:
-                    if btn.get("caption") in ["დეტალურად", "More Details", "Details Ansehen"]:
+                    if btn.get("caption") in ["დეტალურად", "more details", "Details ansehen"]:
                         btn["caption"] = new_caption
     return data
 
