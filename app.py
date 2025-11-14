@@ -20,7 +20,7 @@ def replace_caption_generic(data, new_caption):
 def replace_caption_en():
     try:
         data = request.get_json()
-        updated = replace_caption_generic(data, "more details")
+        updated = replace_caption_generic(data, "More Details")
 
         return app.response_class(
             response=json.dumps(updated, ensure_ascii=False),
@@ -39,7 +39,7 @@ def replace_caption_en():
 def replace_caption_de():
     try:
         data = request.get_json()
-        updated = replace_caption_generic(data, "Details ansehen")
+        updated = replace_caption_generic(data, "Details Ansehen")
 
         return app.response_class(
             response=json.dumps(updated, ensure_ascii=False),
