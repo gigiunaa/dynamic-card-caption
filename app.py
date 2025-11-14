@@ -3,30 +3,49 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
+def replace_caption_generic(data, new_caption):
+    messages = data.get("content", {}).get("messages", [])
+    for msg in messages:
+        if msg.get("type") == "cards":
+            elements = msg.get("elements", [])
+            for el in elements:
+                buttons = el.get("buttons", [])
+                for btn in buttons:
+                    if btn.get("caption") in ["დეტალურად", "more details", "Details ansehen"]:
+                        btn["caption"] = new_caption
+    return data
+
+
 @app.route("/replace-caption", methods=["POST"])
-def replace_caption():
+def replace_caption_en():
     try:
         data = request.get_json()
+        updated = replace_caption_generic(data, "more details")
 
-        # Walk through JSON → find captions in cards
-        messages = data.get("content", {}).get("messages", [])
-        for msg in messages:
-            if msg.get("type") == "cards":
-                elements = msg.get("elements", [])
-                
-                for el in elements:
-                    buttons = el.get("buttons", [])
-                    for btn in buttons:
-                        if btn.get("caption") == "დეტალურად":
-                            btn["caption"] = "more details"
-
-        # RETURN RAW JSON EXACTLY AS IS
         return app.response_class(
-            response=json.dumps(data, ensure_ascii=False),
+            response=json.dumps(updated, ensure_ascii=False),
             status=200,
             mimetype='application/json'
         )
+    except Exception as e:
+        return app.response_class(
+            response=json.dumps({"error": str(e)}, ensure_ascii=False),
+            status=400,
+            mimetype='application/json'
+        )
 
+
+@app.route("/replace-caption-de", methods=["POST"])
+def replace_caption_de():
+    try:
+        data = request.get_json()
+        updated = replace_caption_generic(data, "Details ansehen")
+
+        return app.response_class(
+            response=json.dumps(updated, ensure_ascii=False),
+            status=200,
+            mimetype='application/json'
+        )
     except Exception as e:
         return app.response_class(
             response=json.dumps({"error": str(e)}, ensure_ascii=False),
