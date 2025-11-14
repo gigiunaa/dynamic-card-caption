@@ -1,5 +1,5 @@
 import json
-from flask import Flask, request, jsonify
+from flask import Flask, request
 
 app = Flask(__name__)
 
@@ -20,10 +20,19 @@ def replace_caption():
                         if btn.get("caption") == "დეტალურად":
                             btn["caption"] = "more details"
 
-        return jsonify(data)
+        # RETURN RAW JSON EXACTLY AS IS
+        return app.response_class(
+            response=json.dumps(data, ensure_ascii=False),
+            status=200,
+            mimetype='application/json'
+        )
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return app.response_class(
+            response=json.dumps({"error": str(e)}, ensure_ascii=False),
+            status=400,
+            mimetype='application/json'
+        )
 
 
 @app.route("/", methods=["GET"])
